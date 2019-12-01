@@ -14,7 +14,7 @@ class Pendulum
 public:
   double L; //Lenght
   double q; //Friction coeficient
-  double Fd; //External Force
+  float Fd; //External Force
   double Omega; //External force frequency
   double W; //Angular velocity 
   double Theta; //Angle
@@ -34,7 +34,7 @@ Pendulum::~Pendulum()
 {
 }
 
-void initial_conditions(Pendulum &p);
+void initial_conditions(Pendulum &p, float f);
 void euler_cromer(Pendulum &p,double dt,double t);
 
 
@@ -44,19 +44,23 @@ int main(int argc, char** argv)
   double t=0.0;//Time 
   double t_m=0.0;
   int N = atoi(argv[1]);//steps of evolution
-    
+  
   // intialization
-  initial_conditions(p);
-  for (int ii=1; ii<=N; ii++)
+  for (float i=1.20; i<=2.50; i+=0.01)
+  {
+    initial_conditions(p,i);
+    for (int ii=1; ii<=N; ii++)
     {
       euler_cromer(p,dt,t);
-      t+=dt;
-      t_m+=dt;
       if(t_m>3*M_PI)
       {
-         std::cout << t << "\t" << p.Theta << "\t" << p.W  << std::endl;  
+         t_m=0;
+         std::cout << t << "\t" << p.Theta << "\t" << p.W  << "\t" << p.Fd << std::endl;  
       }
+      t+=dt;
+      t_m+=dt;
     }
+  }
   return 0;
 }
 
@@ -75,10 +79,10 @@ void euler_cromer(Pendulum & p,double dt,double t)
     }
 } 
  
-void initial_conditions(Pendulum & p)
+void initial_conditions(Pendulum & p, float f)
 {
   p.q=0.5;
-  p.Fd=1.3;
+  p.Fd=f;
   p.Omega=0.666;
   p.L=G;
   p.W=0.0;
